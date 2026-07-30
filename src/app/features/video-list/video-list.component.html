@@ -1,0 +1,47 @@
+<section class="video-list">
+  <header class="video-list__header">
+    <h1 class="video-list__title">Meus vídeos</h1>
+    <p class="video-list__subtitle">Atualiza automaticamente a cada 5 segundos.</p>
+  </header>
+
+  @if (isLoading()) {
+    <p class="video-list__empty">Carregando…</p>
+  } @else if (videos().length === 0) {
+    <div class="video-list__empty-state">
+      <span class="video-list__empty-mark">▮▮▯</span>
+      <p>Você ainda não enviou nenhum vídeo.</p>
+    </div>
+  } @else {
+    <div class="video-list__table">
+      <div class="video-list__row video-list__row--head">
+        <span>Arquivo</span>
+        <span>Status</span>
+        <span>Enviado em</span>
+        <span></span>
+      </div>
+
+      @for (video of videos(); track video.id) {
+        <div class="video-list__row">
+          <span class="video-list__filename">{{ video.fileName }}</span>
+
+          <span class="video-list__status">
+            <app-filmstrip-progress [status]="video.status" />
+            <span class="video-list__status-label">{{ statusLabel(video.status) }}</span>
+          </span>
+
+          <span class="video-list__date">{{ video.createdAt | date: 'dd/MM/yyyy HH:mm' }}</span>
+
+          <span class="video-list__action">
+            @if (video.status === 'COMPLETED') {
+              <button type="button" class="video-list__download" (click)="download(video)">
+                Baixar .zip
+              </button>
+            } @else if (video.status === 'FAILED') {
+              <span class="video-list__error-reason">{{ video.errorReason ?? 'Falha no processamento' }}</span>
+            }
+          </span>
+        </div>
+      }
+    </div>
+  }
+</section>

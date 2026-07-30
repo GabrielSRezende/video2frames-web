@@ -1,0 +1,146 @@
+.upload {
+  max-width: 560px;
+}
+
+.upload__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.upload__subtitle {
+  color: var(--text-muted);
+  font-size: 14px;
+  margin: 0 0 28px;
+}
+
+.upload__dropzone {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 48px 24px;
+  border: 1px dashed var(--border-subtle);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.upload__dropzone--active {
+  border-color: var(--accent-teal);
+  background: var(--bg-surface-alt);
+}
+
+.upload__input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload__dropzone-mark {
+  font-family: var(--font-display);
+  color: var(--accent-amber);
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.upload__dropzone-text {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.upload__dropzone-hint {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.upload__preview {
+  padding: 24px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--bg-surface);
+}
+
+.upload__preview-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 18px;
+}
+
+.upload__preview-name {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.upload__preview-size {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.upload__actions {
+  display: flex;
+  gap: 12px;
+}
+
+.upload__primary,
+.upload__secondary {
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.upload__primary {
+  border: none;
+  background: var(--accent-amber);
+  color: #1a1200;
+}
+
+.upload__primary:hover {
+  filter: brightness(1.08);
+}
+
+.upload__secondary {
+  border: 1px solid var(--border-subtle);
+  background: transparent;
+  color: var(--text-muted);
+}
+
+.upload__secondary:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
+.upload__progress {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--bg-surface-alt);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.upload__progress-bar {
+  height: 100%;
+  background: var(--accent-teal);
+  transition: width 0.2s ease;
+}
+
+.upload__progress-label {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.upload__error {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--danger);
+}
