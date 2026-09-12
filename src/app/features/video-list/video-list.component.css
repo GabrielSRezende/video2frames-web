@@ -1,0 +1,107 @@
+.video-list__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.video-list__subtitle {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 0 0 28px;
+}
+
+.video-list__empty,
+.video-list__empty-state {
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.video-list__empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 60px 20px;
+  border: 1px dashed var(--border-subtle);
+  border-radius: 10px;
+}
+
+.video-list__empty-mark {
+  font-family: var(--font-display);
+  color: var(--accent-amber);
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.video-list__table {
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.video-list__row {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 1fr 1fr;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+}
+
+.video-list__row:last-child {
+  border-bottom: none;
+}
+
+.video-list__row--head {
+  background: var(--bg-surface-alt);
+  color: var(--text-muted);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 10px 20px;
+}
+
+.video-list__filename {
+  color: var(--text-primary);
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.video-list__status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.video-list__status-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.video-list__date {
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.video-list__download {
+  border: 1px solid var(--accent-teal);
+  background: transparent;
+  color: var(--accent-teal);
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.video-list__download:hover {
+  background: rgba(47, 183, 176, 0.12);
+}
+
+.video-list__error-reason {
+  font-size: 12px;
+  color: var(--danger);
+}

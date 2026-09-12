@@ -1,0 +1,52 @@
+<section class="upload">
+  <header class="upload__header">
+    <h1 class="upload__title">Enviar vídeo</h1>
+    <p class="upload__subtitle">
+      O vídeo é processado de forma assíncrona. Acompanhe o andamento em "Meus vídeos".
+    </p>
+  </header>
+
+  @if (!selectedFile()) {
+    <label
+      class="upload__dropzone"
+      [class.upload__dropzone--active]="isDragging()"
+      (dragover)="onDragOver($event)"
+      (dragleave)="onDragLeave()"
+      (drop)="onDrop($event)"
+    >
+      <input type="file" accept="video/*" class="upload__input" (change)="onFileSelected($event)" />
+      <span class="upload__dropzone-mark">▮▮▯</span>
+      <span class="upload__dropzone-text">Arraste um vídeo aqui ou clique para escolher</span>
+      <span class="upload__dropzone-hint">MP4, MOV ou AVI</span>
+    </label>
+  } @else {
+    <div class="upload__preview">
+      <div class="upload__preview-info">
+        <span class="upload__preview-name">{{ selectedFile()!.name }}</span>
+        <span class="upload__preview-size">
+          {{ (selectedFile()!.size / (1024 * 1024)).toFixed(1) }} MB
+        </span>
+      </div>
+
+      @if (isUploading()) {
+        <div class="upload__progress" role="progressbar" [attr.aria-valuenow]="progress()">
+          <div class="upload__progress-bar" [style.width.%]="progress()"></div>
+        </div>
+        <span class="upload__progress-label">{{ progress() }}%</span>
+      } @else {
+        <div class="upload__actions">
+          <button type="button" class="upload__secondary" (click)="clearSelection()">
+            Trocar arquivo
+          </button>
+          <button type="button" class="upload__primary" (click)="submitUpload()">
+            Enviar vídeo
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <p class="upload__error">{{ errorMessage() }}</p>
+  }
+</section>

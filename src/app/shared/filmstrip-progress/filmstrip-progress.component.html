@@ -1,0 +1,11 @@
+<div
+  class="filmstrip"
+  [class.filmstrip--processing]="isProcessing()"
+  [class.filmstrip--failed]="isFailed()"
+  role="img"
+  [attr.aria-label]="'Status: ' + status()"
+>
+  @for (frame of frames(); track $index) {
+    <span class="filmstrip__frame" [class.filmstrip__frame--lit]="$index < litCount()"></span>
+  }
+</div>
