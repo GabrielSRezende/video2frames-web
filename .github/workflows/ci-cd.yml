@@ -39,12 +39,7 @@ jobs:
       - name: Production build
         run: npm run build
 
-      # Opcional: só roda se o secret SONAR_TOKEN estiver configurado no repositório
-      # (Settings > Secrets and variables > Actions). Crie um projeto no
-      # SonarCloud (sonarcloud.io, gratuito para repositórios públicos) e
-      # configure:
-      #   - Secret SONAR_TOKEN: token gerado no SonarCloud
-      #   - Variable SONAR_ORGANIZATION: sua organização no SonarCloud
+      # roda só se SONAR_TOKEN estiver configurado nos secrets do repo
       - name: SonarCloud analysis
         if: ${{ env.SONAR_TOKEN != '' }}
         uses: SonarSource/sonarqube-scan-action@v5

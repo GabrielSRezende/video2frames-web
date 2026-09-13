@@ -15,7 +15,6 @@ export class AuthService {
 
   private readonly accessToken = signal<string | null>(this.readStoredToken());
 
-  /** Signal público: true enquanto houver um token de acesso guardado. */
   readonly isAuthenticated = computed(() => !!this.accessToken());
 
   login(credentials: LoginRequest): Observable<AuthResponse> {

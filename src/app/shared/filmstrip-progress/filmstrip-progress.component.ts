@@ -20,7 +20,7 @@ export class FilmstripProgressComponent {
     if (current === 'FAILED') return FRAME_COUNT;
     if (current === 'COMPLETED') return FRAME_COUNT;
     const stageIndex = STAGE_ORDER.indexOf(current);
-    // UPLOADED acende 1 quadro, PROCESSING acende progressivamente até o penúltimo
+    // PROCESSING acende quase tudo, UPLOADED acende só o primeiro
     return stageIndex <= 0 ? 1 : FRAME_COUNT - 1;
   });
 

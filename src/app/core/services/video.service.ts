@@ -17,7 +17,7 @@ export class VideoService {
     return this.http.get<VideoItem[]>(`${environment.videoApiUrl}/videos`);
   }
 
-  /** Envia o vídeo e emite eventos de progresso (0-100) até a resposta final. */
+  // emite progresso até a resposta final
   uploadVideo(file: File): Observable<UploadProgressEvent | VideoItem> {
     const formData = new FormData();
     formData.append('file', file);

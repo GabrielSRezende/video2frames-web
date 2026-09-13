@@ -1,7 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { VideoService } from '../../core/services/video.service';
 import { UploadProgressEvent } from '../../core/models/video.model';
+
+type UploadStatus = 'pending' | 'uploading' | 'done' | 'error';
+
+interface UploadItem {
+  file: File;
+  progress: number;
+  status: UploadStatus;
+  errorMessage?: string;
+}
 
 @Component({
   selector: 'app-upload',
@@ -14,10 +23,11 @@ export class UploadComponent {
   private readonly router = inject(Router);
 
   readonly isDragging = signal(false);
-  readonly selectedFile = signal<File | null>(null);
-  readonly progress = signal(0);
+  readonly items = signal<UploadItem[]>([]);
   readonly isUploading = signal(false);
   readonly errorMessage = signal<string | null>(null);
+
+  readonly hasFiles = computed(() => this.items().length > 0);
 
   onDragOver(event: DragEvent): void {
     event.preventDefault();
@@ -31,54 +41,91 @@ export class UploadComponent {
   onDrop(event: DragEvent): void {
     event.preventDefault();
     this.isDragging.set(false);
-    const file = event.dataTransfer?.files?.[0];
-    if (file) this.handleFile(file);
+    if (event.dataTransfer?.files) this.handleFiles(event.dataTransfer.files);
   }
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-    if (file) this.handleFile(file);
+    if (input.files) this.handleFiles(input.files);
+    input.value = '';
   }
 
-  private handleFile(file: File): void {
-    if (!file.type.startsWith('video/')) {
-      this.errorMessage.set('Envie um arquivo de vídeo válido.');
-      return;
+  private handleFiles(fileList: FileList): void {
+    const files = Array.from(fileList);
+    const valid = files.filter((f) => f.type.startsWith('video/'));
+    const invalidCount = files.length - valid.length;
+
+    if (invalidCount === files.length) {
+      this.errorMessage.set('Envie apenas arquivos de vídeo válidos.');
+    } else if (invalidCount > 0) {
+      this.errorMessage.set(`${invalidCount} arquivo(s) ignorado(s) por não serem vídeos válidos.`);
+    } else {
+      this.errorMessage.set(null);
     }
-    this.errorMessage.set(null);
-    this.selectedFile.set(file);
+
+    if (valid.length === 0) return;
+
+    this.items.update((current) => [
+      ...current,
+      ...valid.map((file) => ({ file, progress: 0, status: 'pending' as UploadStatus })),
+    ]);
+  }
+
+  removeItem(item: UploadItem): void {
+    if (this.isUploading()) return;
+    this.items.update((current) => current.filter((i) => i !== item));
   }
 
   clearSelection(): void {
-    this.selectedFile.set(null);
-    this.progress.set(0);
+    if (this.isUploading()) return;
+    this.items.set([]);
+    this.errorMessage.set(null);
   }
 
+  // envia todos os pendentes em paralelo
   submitUpload(): void {
-    const file = this.selectedFile();
-    if (!file || this.isUploading()) return;
+    const pending = this.items().filter((i) => i.status === 'pending');
+    if (pending.length === 0 || this.isUploading()) return;
 
     this.isUploading.set(true);
     this.errorMessage.set(null);
 
-    this.videoService.uploadVideo(file).subscribe({
-      next: (event) => {
-        if ('progress' in event) {
-          this.progress.set((event as UploadProgressEvent).progress);
-        } else {
-          this.onUploadComplete();
-        }
-      },
-      error: () => {
-        this.isUploading.set(false);
-        this.errorMessage.set('Falha ao enviar o vídeo. Tente novamente.');
-      },
-    });
+    let remaining = pending.length;
+
+    for (const item of pending) {
+      this.updateItem(item, { status: 'uploading' });
+
+      this.videoService.uploadVideo(item.file).subscribe({
+        next: (event) => {
+          if ('progress' in event) {
+            this.updateItem(item, { progress: (event as UploadProgressEvent).progress });
+          } else {
+            this.updateItem(item, { status: 'done', progress: 100 });
+          }
+        },
+        error: () => {
+          this.updateItem(item, { status: 'error', errorMessage: 'Falha ao enviar' });
+          remaining -= 1;
+          this.checkAllSettled(remaining);
+        },
+        complete: () => {
+          remaining -= 1;
+          this.checkAllSettled(remaining);
+        },
+      });
+    }
   }
 
-  private onUploadComplete(): void {
+  private checkAllSettled(remaining: number): void {
+    if (remaining > 0) return;
     this.isUploading.set(false);
-    this.router.navigate(['/videos']);
+
+    if (this.items().some((i) => i.status === 'done')) {
+      this.router.navigate(['/videos']);
+    }
+  }
+
+  private updateItem(target: UploadItem, changes: Partial<UploadItem>): void {
+    this.items.update((current) => current.map((i) => (i === target ? { ...i, ...changes } : i)));
   }
 }
