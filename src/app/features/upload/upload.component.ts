@@ -126,6 +126,8 @@ export class UploadComponent {
   }
 
   private updateItem(target: UploadItem, changes: Partial<UploadItem>): void {
-    this.items.update((current) => current.map((i) => (i === target ? { ...i, ...changes } : i)));
+    this.items.update((current) =>
+      current.map((i) => (i.file === target.file ? { ...i, ...changes } : i)),
+    );
   }
 }
