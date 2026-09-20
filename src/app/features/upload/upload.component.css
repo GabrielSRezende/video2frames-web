@@ -87,6 +87,7 @@
 .upload__actions {
   display: flex;
   gap: 12px;
+  margin-top: 20px;
 }
 
 .upload__primary,
